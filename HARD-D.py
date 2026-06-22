@@ -33,5 +33,5 @@ def filter_audio (audio, sr, lowcut, highcut, order = 4):
     b, a = butter(order, [low, high], btype='band')
     y = filtfilt(b, a, audio)
     return y
-
+#May adjust lowcut and highcut depending on the desired frequency(hz) level
 audio = filter_audio(audio, sr = 22050, lowcut = 1000, highcut = 8000 )
