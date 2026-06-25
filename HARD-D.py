@@ -1,5 +1,4 @@
 import librosa as lb
-import librosa as lb
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -15,23 +14,24 @@ from scipy.signal import butter, filtfilt
 filename = os.path.join("path", "to", "filename.wav")
 
 #load and convert wav file
-audio, sr = lb.load(filename, sr = 22050, mono = True) 
+raw_audio, sr = lb.load(filename, sr = 22050, mono = True) 
 
 # Normalize amplitude (epsilon guards against silent recordings)
-audio = audio / (np.max(np.abs(audio)) + 1e-9)
+norm_audio = raw_audio / (np.max(np.abs(raw_audio)) + 1e-9)
 
 #pre-emphasis amplifier
   
-audio = np.append(audio[:1], audio[1:] - 0.97 * audio[:-1])
+emp_audio = np.append(norm_audio[:1], norm_audio[1:] - 0.97 * norm_audio[:-1])
 
 #filter function
 
-def filter_audio (audio, sr, lowcut, highcut, order = 4):
+def filter_audio (emp_audio, sr, lowcut, highcut, order = 4):
     nyq = sr / 2
     low = lowcut / nyq
     high = highcut / nyq
     b, a = butter(order, [low, high], btype='band')
-    y = filtfilt(b, a, audio)
+    y = filtfilt(b, a, emp_audio)
     return y
 #May adjust lowcut and highcut depending on the desired frequency(hz) level
-audio = filter_audio(audio, sr = 22050, lowcut = 1000, highcut = 8000 )
+filt_audio = filter_audio(emp_audio, sr = 22050, lowcut = 1000, highcut = 8000 )
+
