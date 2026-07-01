@@ -45,6 +45,22 @@ filt_audio = filter_audio(emp_audio, sr = 22050, lowcut = 1000, highcut = 8000 )
 def apply_gain(x, gain_factor):
     return  np.clip(x * gain_factor, -1.0, 1.0)
 
+def rms_norm(audio, target_rms = 0.1):
+    current_rms = np.sqrt(np.mean(audio ** 2))
+    target_rms = #[0.05 – 0.1Noisy environments (grain storage, motors nearby)
+                 #   0.1 – 0.2Moderate background noise
+                 # 0.2 – 0.3Clean, quiet environments  ]
+    if current_rms == 0:
+        return audio
+    return audio * (target_rms / current_rms)
+
+def compress(audio, threshold = 0.3, ratio = 4.0):
+    compressed = audio.copy()
+    mask = np.abs(audio) > threshold
+    excess = np.abs(audio[mask]) - threshold
+    compressed[mask] = np.sign(audio[mask]) * (threshold + excess / ratio)
+    return compressed
+
 filt_audio = normalize_audio(filt_audio)
 amp_audio = apply_gain(filt_audio, gain_factor = 2.0)
 peak_audio = amp_audio / np.max(np.abs(amp_audio))
