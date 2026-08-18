@@ -1,0 +1,12 @@
+# requirements-train.txt (on your PC)
+numpy
+scipy
+librosa
+scikit-learn
+joblib
+matplotlib
+sounddevice
+argparse
+datetime
+time
+scipy.signal
