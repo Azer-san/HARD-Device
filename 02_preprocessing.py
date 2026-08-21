@@ -40,7 +40,7 @@ def load_and_convert(path, sr=SAMPLE_RATE):
 
 def pre_emphasis(audio, coeff=0.97):
     """Boost high frequencies: y[n] = x[n] - coeff * x[n-1]."""
-    return np.append(audio[0], audio[1:] - coeff * audio[:-1])
+    return np.append(audio[:1], audio[1:] - coeff * audio[:-1])
 
 
 def bandpass_filter(audio, sr=SAMPLE_RATE, low=BANDPASS_LOW, high=BANDPASS_HIGH,
