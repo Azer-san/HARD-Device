@@ -11,8 +11,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, confusion_matrix
 
 # --- Constants ---
-FEATURES_DIR = "../data/features"
-OUT_DIR      = "../models"
+FEATURES_DIR = "data/features"
+OUT_DIR      = "models"
 TARGET_ACC   = 0.90
 
 def plot_confusion_matrix(y_true, y_pred, out_path):
