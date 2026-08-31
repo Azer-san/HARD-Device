@@ -9,7 +9,7 @@ For every preprocessed audio file:
 Then split into Train (70%) / Val (15%) / Test (15%) and save as .npy.
 
 Usage:
-    python 03_feature_extraction.py --data-dir ../data --out-dir ../data/features
+    python 03_feature_extraction.py --data-dir data --out-dir data/features
 """
 
 import argparse
@@ -88,10 +88,10 @@ def split_dataset(X, y, train_frac=0.70, val_frac=0.15, seed=42):
     test_idx = idx[n_train + n_val:]
 
     return (X[train_idx], y[train_idx]), (X[val_idx], y[val_idx]), (X[test_idx], y[test_idx])
-  
+
 def main():
-    DATA_DIR = "../data"
-    OUT_DIR = "../data/features"
+    DATA_DIR = "data"
+    OUT_DIR = "data/features"
     os.makedirs(OUT_DIR, exist_ok=True)
 
     print("Extracting features...")
