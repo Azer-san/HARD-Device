@@ -64,7 +64,7 @@ def record_chunk():
 
 def preprocess(audio):
     """Run the full preprocessing chain from phase 2"""
-    peak = np.max(npabs(audio))
+    peak = np.max(np.abs(audio))
     audio = audio / (peak + preprocessing.EPSILON)  # Normalize to [-1, 1]
     audio = preprocessing.pre_emphaisis(audio)
     audio = preprocessing.bandpass_filter(audio, sr=SAMPLE_RATE)
@@ -77,7 +77,7 @@ def preprocess(audio):
 def log_detection(prob):
     """Append detection to CSV with timestamp"""
     ts = datetime.now().isoformat(timespec="seconds")
-    line = f"{ts}, weevil_detected, confidence={prob:.4f}\n
+    line = (f"{ts}, weevil_detected, confidence={prob:.4f}\n")
     with open(LOG_PATH, "a") as f:
         f.write(line)
     print(f"WEEVIL DETECTED conficence={prob:.2%} @ {ts}")
@@ -123,5 +123,3 @@ if __name__ == "__main__":
 
 
 
-if __name__ == "__main__":
-    main()
