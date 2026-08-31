@@ -87,28 +87,27 @@ def split_dataset(X, y, train_frac=0.70, val_frac=0.15, seed=42):
     val_idx = idx[n_train:n_train + n_val]
     test_idx = idx[n_train + n_val:]
 
-    return (X[train_idx], y[train_idx]), 
-           (X[val_idx], y[val_idx]), 
-           (X[test_idx], y[test_idx])
+    return (X[train_idx], y[train_idx]), (X[val_idx], y[val_idx]), (X[test_idx], y[test_idx])
+  
+def main():
+    DATA_DIR = "../data"
+    OUT_DIR = "../data/features"
+    os.makedirs(OUT_DIR, exist_ok=True)
 
-DATA_DIR = "../data"
-OUT_DIR = "../data/features"
-os.makedirs(OUT_DIR, exist_ok=True)
+    print("Extracting features...")
+    X, y = build_dataset(DATA_DIR)
+    print(f"Total samples: {len(y)}  (weevil={int(y.sum())} | no_weevil={int((1 - y).sum())})")
 
-print("Extracting features...")
-X, y = build_dataset(DATA_DIR)
-print(f"Total samples: {len(y)}  (weevil={int(y.sum())} | no_weevil={int((1 - y).sum())})")
+    if len(y) < 20:
+        print("WARNING: very small dataset. Aim for atleast 20 samples per class before training.")
 
-if len(y) < 20:
-    print("WARNING: very small dataset. Aim for atleast 20 samples per class before training.")
+    (X_train, y_train), (X_val, y_val), (X_test, y_test) = split_dataset(X, y)
 
-X_train, y_train), (X_val, y_val), (X_test, y_test) = split_dataset(X, y)
-
-for name, arr in [("X_train", X_train), ("y_train", y_train), 
-                  ("X_val", X_val), ("y_val", y_val),
-                  ("X_test", X_test), ("y_test", y_test)]:
-    np.save(os.path.join(OUT_DIR, f"{name}.npy"), arr)
-    print(f"  saved{name}.npy - shape {arr.shape}")
+    for name, arr in [("X_train", X_train), ("y_train", y_train), 
+                    ("X_val", X_val), ("y_val", y_val),
+                    ("X_test", X_test), ("y_test", y_test)]:
+        np.save(os.path.join(OUT_DIR, f"{name}.npy"), arr)
+        print(f"  saved{name}.npy - shape {arr.shape}")
 
 
 if __name__ == "__main__":
