@@ -20,7 +20,7 @@ def plot_confusion_matrix(y_true, y_pred, out_path):
     fig, ax = plt.subplots(figsize=(4, 4))
     ax.imshow(cm, cmap="Blues")
     labels = ["No Weevil", "Weevil"]
-    ax.set_xticks([0, 1]); ax.set_stickslabels(labels)
+    ax.set_xticks([0, 1]); ax.set_xticklabels(labels)
     ax.set_yticks([0, 1]); ax.set_yticklabels(labels)
     ax.set_xlabel("Predicted"); ax.set_ylabel("Actual")
     for i in range(2):
