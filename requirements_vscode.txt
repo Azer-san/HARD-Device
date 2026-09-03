@@ -6,7 +6,6 @@ scikit-learn
 joblib
 matplotlib
 sounddevice
-argparse
-datetime
-time
-scipy.signal
+gdown
+
+python3 06_live_inference.py data/testing_audio/D14-polygamus1_t19_fil250-10k-short.wav
