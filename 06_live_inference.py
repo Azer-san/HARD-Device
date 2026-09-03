@@ -10,14 +10,14 @@ import importlib.util
 from datetime import datetime
 
 # --- Constants ---
-MODEL_PATH     = "../models/weevil_svm.pkl"
-SCALER_PATH    = "../models/scaler.pkl"
+MODEL_PATH     = "models/weevil_svm.pkl"
+SCALER_PATH    = "models/scaler.pkl"
 THRESHOLD      = 0.7    # confidence needed to trigger detection
 CHUNK_DURATION = 2.0    # seconds per recording chunk
-LOG_PATH       = "../detections.csv"
+LOG_PATH       = "detections.csv"
 
 #Import from phase 2
-_spec = importlib.util.spec_from_location(
+_spec = importlib.util.spec_from_file_location(
     "preprocessing",
     os.path.join(os.path.dirname(__file__), "02_preprocessing.py"))
 
@@ -27,7 +27,7 @@ _spec.loader.exec_module(preprocessing)
 SAMPLE_RATE = preprocessing.SAMPLE_RATE
 
 #Import form phase 3
-_spec2 = importlib.util.spec_from_location(
+_spec2 = importlib.util.spec_from_file_location(
     "feature_extraction",
     os.path.join(os.path.dirname(__file__), "03_feature_extraction.py"))
 feature_extraction = importlib.util.module_from_spec(_spec2)
@@ -41,10 +41,10 @@ print("Model and scaler loaded successfully.")
 def predict(audio):
     """Run full feature extraction + SVM prediction on one audio chunk."""
     # Step 1 — extract 1D feature vector (shape: (83,))
-    features = feature_extraction.extract_features(audio, sr=SAMPLE_RATE)
+    features = feature_extraction.extract_svm_features(audio, sr=SAMPLE_RATE)
 
     #Step 2 - sclae using the same scaler from training
-    features_scaled = scaler.transofm(features.reshape(-1, 1))
+    features_scaled = scaler.transform(features.reshape(1, -1))
 
     #Step 3 - get weevil probability (index 1 = weevil class)
     prob = svm.predict_proba(features_scaled)[0][1]
@@ -64,7 +64,7 @@ def record_chunk():
 
 def preprocess(audio):
     """Run the full preprocessing chain from phase 2"""
-    peak = np.max(npabs(audio))
+    peak = np.max(np.abs(audio))
     audio = audio / (peak + preprocessing.EPSILON)  # Normalize to [-1, 1]
     audio = preprocessing.pre_emphaisis(audio)
     audio = preprocessing.bandpass_filter(audio, sr=SAMPLE_RATE)
@@ -77,7 +77,7 @@ def preprocess(audio):
 def log_detection(prob):
     """Append detection to CSV with timestamp"""
     ts = datetime.now().isoformat(timespec="seconds")
-    line = f"{ts}, weevil_detected, confidence={prob:.4f}\n
+    line = (f"{ts}, weevil_detected, confidence={prob:.4f}\n")
     with open(LOG_PATH, "a") as f:
         f.write(line)
     print(f"WEEVIL DETECTED conficence={prob:.2%} @ {ts}")
@@ -123,5 +123,3 @@ if __name__ == "__main__":
 
 
 
-if __name__ == "__main__":
-    main()
