@@ -75,7 +75,7 @@ def build_dataset(data_dir):
     # y shape: (N,)   — 0 or 1 per clip
 
 
-def split_dataset(X, y, train_frac=0.70, val_frac=0.15, seed=42):
+def split_dataset(X, y, train_frac=0.70, val_frac=0.10, seed=42):
     n = len(y)
     rng = np.random.default_rng(seed)
     idx = rng.permutation(n)
